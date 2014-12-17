@@ -15,7 +15,7 @@ public class Othello extends GraphicsProgram {
 
 	private static final int PIECE_RADIUS = 30;
 
-	private static final int PIECE_OFFSET = 10;
+	private static final int OFFSET = 10;
 
 	private static final int CENTER = 320;
 
@@ -39,7 +39,13 @@ public class Othello extends GraphicsProgram {
 
 			if (!c.isClicked()) {
 				addPiece(c.getX(), c.getY(), playerTurn);
-				flipRight(c.getXCord() + 1, c.getYCord(), playerTurn);
+				if (playerTurn) {
+					pieceTracker[c.getYCord()][c.getXCord()] = WHITE;
+				} else {
+					pieceTracker[c.getYCord()][c.getXCord()] = BLACK;
+				}
+				flip(c.getXCord(), c.getYCord(), playerTurn);
+
 				playerTurn = !playerTurn;
 			}
 
@@ -51,18 +57,440 @@ public class Othello extends GraphicsProgram {
 
 	}
 
+	private void flip(int xCord, int yCord, boolean pTurn) {
+		if (pieceRight(xCord, yCord, pTurn)) {
+			flipRight(xCord, yCord, pTurn);
+		}
+
+		if (pieceLeft(xCord, yCord, pTurn)) {
+			flipLeft(xCord, yCord, pTurn);
+		}
+
+		if (pieceUp(xCord, yCord, pTurn)) {
+			flipUp(xCord, yCord, pTurn);
+		}
+		
+		if (pieceDown(xCord, yCord, pTurn)) {
+			flipDown(xCord, yCord, pTurn);
+		}
+		
+		if (pieceUpLeft(xCord, yCord, pTurn)) {
+			flipUpLeft(xCord, yCord, pTurn);
+		}
+		
+		if (pieceUpRight(xCord, yCord, pTurn)) {
+			flipUpRight(xCord, yCord, pTurn);
+		}
+		
+		if (pieceLowLeft(xCord, yCord, pTurn)) {
+			flipLowLeft(xCord, yCord, pTurn);
+		}
+		
+		if (pieceLowRight(xCord, yCord, pTurn)) {
+			flipLowRight(xCord, yCord, pTurn);
+		}
+	}
+
+	private boolean pieceRight(int rX, int rY, boolean pTurn) {
+		boolean piecePresent = false;
+		if (rX == CELLS_PER_ROW - 1)
+			return piecePresent;
+		// at the right of the screen
+
+		rX++;
+		if (pTurn) { // white is placing
+			while (pieceTracker[rY][rX] == BLACK) {
+				if (rX == CELLS_PER_ROW - 1) break;
+				rX++;
+			}
+			if (pieceTracker[rY][rX] == WHITE)
+				piecePresent = true;
+		} else { // black is placing
+			while (pieceTracker[rY][rX] == WHITE) {
+				if (rX == CELLS_PER_ROW - 1) break;
+				rX++;
+			}
+			if (pieceTracker[rY][rX] == BLACK)
+				piecePresent = true;
+		}
+
+		return piecePresent;
+	}
+
 	private void flipRight(int rX, int rY, boolean pTurn) {
+		rX++;
 		if (pTurn) {
 			while (pieceTracker[rY][rX] == BLACK) {
 				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
 						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
-				//piece.setFillColor(Color.white);
-				remove(piece);
-
+				piece.setFillColor(Color.white);
+				pieceTracker[rY][rX] = WHITE;
+				rX++;
+			}
+		} else {
+			while (pieceTracker[rY][rX] == WHITE) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.black);
+				pieceTracker[rY][rX] = BLACK;
+				rX++;
 			}
 		}
 	}
 
+	private boolean pieceLeft(int rX, int rY, boolean pTurn) {
+		boolean piecePresent = false;
+		if (rX == 0)
+			return piecePresent;
+		// at the left of the screen
+
+		rX--;
+		if (pTurn) { // white is placing
+			while (pieceTracker[rY][rX] == BLACK) {
+				if (rX == 0) break;
+				rX--;
+			}
+			if (pieceTracker[rY][rX] == WHITE)
+				piecePresent = true;
+		} else { // black is placing
+			while (pieceTracker[rY][rX] == WHITE) {
+				if (rX == 0) break;
+				rX--;
+			}
+			if (pieceTracker[rY][rX] == BLACK)
+				piecePresent = true;
+		}
+
+		return piecePresent;
+	}
+
+	private void flipLeft(int rX, int rY, boolean pTurn) {
+		rX--;
+		if (pTurn) {
+			while (pieceTracker[rY][rX] == BLACK) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.white);
+				pieceTracker[rY][rX] = WHITE;
+				rX--;
+			}
+		} else {
+			while (pieceTracker[rY][rX] == WHITE) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.black);
+				pieceTracker[rY][rX] = BLACK;
+				rX--;
+			}
+		}
+	}
+
+	private boolean pieceUp(int rX, int rY, boolean pTurn) {
+		boolean piecePresent = false;
+		if (rY == 0)
+			return piecePresent;
+		// at the top of the screen
+
+		rY--;
+		if (pTurn) { // white is placing
+			while (pieceTracker[rY][rX] == BLACK) {
+				if (rY == 0) break;
+				rY--;
+			}
+			if (pieceTracker[rY][rX] == WHITE)
+				piecePresent = true;
+		} else { // black is placing
+			while (pieceTracker[rY][rX] == WHITE) {
+				if (rY == 0) break;
+				rY--;
+			}
+			if (pieceTracker[rY][rX] == BLACK)
+				piecePresent = true;
+		}
+
+		return piecePresent;
+	}
+
+	private void flipUp(int rX, int rY, boolean pTurn) {
+		rY--;
+		if (pTurn) {
+			while (pieceTracker[rY][rX] == BLACK) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.white);
+				pieceTracker[rY][rX] = WHITE;
+				rY--;
+			}
+		} else {
+			while (pieceTracker[rY][rX] == WHITE) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.black);
+				pieceTracker[rY][rX] = BLACK;
+				rY--;
+			}
+		}
+	}
+
+	private boolean pieceDown(int rX, int rY, boolean pTurn) {
+		boolean piecePresent = false;
+		if (rY == CELLS_PER_ROW - 1)
+			return piecePresent;
+		// at the bottom of the screen
+
+		rY++;
+		if (pTurn) { // white is placing
+			while (pieceTracker[rY][rX] == BLACK) {
+				if (rY == CELLS_PER_ROW - 1) break;
+				rY++;
+			}
+			if (pieceTracker[rY][rX] == WHITE)
+				piecePresent = true;
+		} else { // black is placing
+			while (pieceTracker[rY][rX] == WHITE) {
+				if (rY == CELLS_PER_ROW - 1) break;
+				rY++;
+			}
+			if (pieceTracker[rY][rX] == BLACK)
+				piecePresent = true;
+		}
+
+		return piecePresent;
+	}
+
+	private void flipDown(int rX, int rY, boolean pTurn) {
+		rY++;
+		if (pTurn) {
+			while (pieceTracker[rY][rX] == BLACK) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.white);
+				pieceTracker[rY][rX] = WHITE;
+				rY++;
+			}
+		} else {
+			while (pieceTracker[rY][rX] == WHITE) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.black);
+				pieceTracker[rY][rX] = BLACK;
+				rY++;
+			}
+		}
+	}
+
+	private boolean pieceUpLeft(int rX, int rY, boolean pTurn) {
+		boolean piecePresent = false;
+		if (rX == 0 || rY == 0)
+			return piecePresent;
+		// at the upper-left edges of the screen
+		rX--;
+		rY--;
+		
+		if (pTurn) { // white is placing
+			while (pieceTracker[rY][rX] == BLACK) {
+				if (rX == 0 || rY == 0) break;
+				rX--;
+				rY--;
+			}
+			if (pieceTracker[rY][rX] == WHITE)
+				piecePresent = true;
+		} else { // black is placing
+			while (pieceTracker[rY][rX] == WHITE) {
+				if (rX == 0 || rY == 0) break;
+				rX--;
+				rY--;
+			}
+			if (pieceTracker[rY][rX] == BLACK)
+				piecePresent = true;
+		}
+
+		return piecePresent;
+	}
+	
+	private void flipUpLeft(int rX, int rY, boolean pTurn) {
+		rX--;
+		rY--;
+		if (pTurn) {
+			while (pieceTracker[rY][rX] == BLACK) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.white);
+				pieceTracker[rY][rX] = WHITE;
+				rX--;
+				rY--;
+			}
+		} else {
+			while (pieceTracker[rY][rX] == WHITE) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.black);
+				pieceTracker[rY][rX] = BLACK;
+				rX--;
+				rY--;
+			}
+		}
+	}
+	
+	private boolean pieceUpRight(int rX, int rY, boolean pTurn) {
+		boolean piecePresent = false;
+		if (rX == CELLS_PER_ROW - 1 || rY == 0)
+			return piecePresent;
+		// at the upper-right edges of the screen
+		rX++;
+		rY--;
+		
+		if (pTurn) { // white is placing
+			while (pieceTracker[rY][rX] == BLACK) {
+				if (rX == CELLS_PER_ROW - 1 || rY == 0) break;
+				rX++;
+				rY--;
+			}
+			if (pieceTracker[rY][rX] == WHITE)
+				piecePresent = true;
+		} else { // black is placing
+			while (pieceTracker[rY][rX] == WHITE) {
+				if (rX == CELLS_PER_ROW - 1 || rY == 0) break;
+				rX++;
+				rY--;
+			}
+			if (pieceTracker[rY][rX] == BLACK)
+				piecePresent = true;
+		}
+
+		return piecePresent;
+	}
+	
+	private void flipUpRight(int rX, int rY, boolean pTurn) {
+		rX++;
+		rY--;
+		if (pTurn) {
+			while (pieceTracker[rY][rX] == BLACK) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.white);
+				pieceTracker[rY][rX] = WHITE;
+				rX++;
+				rY--;
+			}
+		} else {
+			while (pieceTracker[rY][rX] == WHITE) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.black);
+				pieceTracker[rY][rX] = BLACK;
+				rX++;
+				rY--;
+			}
+		}
+	}
+	
+	private boolean pieceLowLeft(int rX, int rY, boolean pTurn) {
+		boolean piecePresent = false;
+		if (rX == 0 || rY == CELLS_PER_ROW - 1)
+			return piecePresent;
+		// at the upper-left edges of the screen
+		rX--;
+		rY++;
+		
+		if (pTurn) { // white is placing
+			while (pieceTracker[rY][rX] == BLACK) {
+				if (rX == 0 || rY == CELLS_PER_ROW - 1) break;
+				rX--;
+				rY++;
+			}
+			if (pieceTracker[rY][rX] == WHITE)
+				piecePresent = true;
+		} else { // black is placing
+			while (pieceTracker[rY][rX] == WHITE) {
+				if (rX == 0 || rY == CELLS_PER_ROW - 1) break;
+				rX--;
+				rY++;
+			}
+			if (pieceTracker[rY][rX] == BLACK)
+				piecePresent = true;
+		}
+
+		return piecePresent;
+	}
+	
+	private void flipLowLeft(int rX, int rY, boolean pTurn) {
+		rX--;
+		rY++;
+		if (pTurn) {
+			while (pieceTracker[rY][rX] == BLACK) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.white);
+				pieceTracker[rY][rX] = WHITE;
+				rX--;
+				rY++;
+			}
+		} else {
+			while (pieceTracker[rY][rX] == WHITE) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.black);
+				pieceTracker[rY][rX] = BLACK;
+				rX--;
+				rY++;
+			}
+		}
+	}
+	
+	private boolean pieceLowRight(int rX, int rY, boolean pTurn) {
+		boolean piecePresent = false;
+		if (rX == CELLS_PER_ROW - 1 || rY == CELLS_PER_ROW - 1)
+			return piecePresent;
+		// at the upper-left edges of the screen
+		rX++;
+		rY++;
+		
+		if (pTurn) { // white is placing
+			while (pieceTracker[rY][rX] == BLACK) {
+				if (rX == CELLS_PER_ROW - 1 || rY == CELLS_PER_ROW - 1) break;
+				rX++;
+				rY++;
+			}
+			if (pieceTracker[rY][rX] == WHITE)
+				piecePresent = true;
+		} else { // black is placing
+			while (pieceTracker[rY][rX] == WHITE) {
+				if (rX == CELLS_PER_ROW - 1 || rY == CELLS_PER_ROW - 1) break;
+				rX++;
+				rY++;
+			}
+			if (pieceTracker[rY][rX] == BLACK)
+				piecePresent = true;
+		}
+
+		return piecePresent;
+	}
+	
+	private void flipLowRight(int rX, int rY, boolean pTurn) {
+		rX++;
+		rY++;
+		if (pTurn) {
+			while (pieceTracker[rY][rX] == BLACK) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.white);
+				pieceTracker[rY][rX] = WHITE;
+				rX++;
+				rY++;
+			}
+		} else {
+			while (pieceTracker[rY][rX] == WHITE) {
+				GOval piece = (GOval) getElementAt(CELL_LENGTH * rX
+						+ CELL_CENTER, CELL_LENGTH * rY + CELL_CENTER);
+				piece.setFillColor(Color.black);
+				pieceTracker[rY][rX] = BLACK;
+				rX++;
+				rY++;
+			}
+		}
+	}
+	
 	private void createBoard(int appLength, int numCells) {
 		setSize(appLength, appLength);
 
@@ -104,8 +532,8 @@ public class Othello extends GraphicsProgram {
 	}
 
 	private void addPiece(double x, double y, boolean playerColor) {
-		GOval o = new GOval(x + PIECE_OFFSET, y + PIECE_OFFSET,
-				PIECE_RADIUS * 2, PIECE_RADIUS * 2);
+		GOval o = new GOval(x + OFFSET, y + OFFSET, PIECE_RADIUS * 2,
+				PIECE_RADIUS * 2);
 		o.setFilled(true);
 		if (playerColor) {
 			o.setFillColor(Color.white);
